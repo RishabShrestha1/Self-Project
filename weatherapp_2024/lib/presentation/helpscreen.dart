@@ -17,13 +17,15 @@ class _HelpScreenState extends State<HelpScreen> {
   void initState() {
     super.initState();
     _checkSkipStatus();
-    TimedNavigation();
+    timedNavigation();
   }
 
   Future<void> _checkSkipStatus() async {
     bool skipClicked = await SkipButtonUtil.hasSkipButtonPressed();
     if (skipClicked) {
-      Navigator.pushReplacementNamed(context, 'home');
+      if (context.mounted) {
+        Navigator.pushReplacementNamed(context, 'home');
+      }
     }
   }
 
@@ -31,15 +33,15 @@ class _HelpScreenState extends State<HelpScreen> {
     SkipButtonUtil.setSkipButtonPressed(true);
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomePage()),
+      MaterialPageRoute(builder: (context) => const HomePage()),
     );
   }
 
-  Future<void> TimedNavigation() async {
+  Future<void> timedNavigation() async {
     await Future.delayed(const Duration(seconds: 5));
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomePage()),
+      MaterialPageRoute(builder: (context) => const HomePage()),
     );
   }
 
