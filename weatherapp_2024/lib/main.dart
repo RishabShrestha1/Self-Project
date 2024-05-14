@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         home: const HelpScreen(),
         routes: <String, WidgetBuilder>{
           '/help': (BuildContext context) => const HelpScreen(),
-          'home': (BuildContext context) => const HomePage(),
+          'home': (BuildContext context) => HomePage(),
         });
   }
 }

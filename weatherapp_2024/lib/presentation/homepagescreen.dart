@@ -18,8 +18,8 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _cityController = TextEditingController();
   final WeatherDataController _weatherDataController = WeatherDataController();
   WeatherDataFromApi? _weatherData;
-  String latitude = '1';
-  String longitude = '1';
+  String latitude = '';
+  String longitude = '';
   PermissionStatus _status = PermissionStatus.denied;
   bool buttonPressed = false;
 
@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     // mygpsloco();
   }
 
-//Get Data about location
+//Ask permission
   Future<void> _requestPermission() async {
     PermissionStatus status = await Permission.location.request();
     setState(() {
@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+//Get Geo Data
   Future<Position> getLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -61,16 +62,18 @@ class _HomePageState extends State<HomePage> {
 
   void getCurrentLocationWeather() async {
     getLocation().then((value) {
-      latitude = value.latitude.toString();
-      longitude = value.longitude.toString();
+      setState(() {
+        latitude = value.latitude.toString();
+        longitude = value.longitude.toString();
+      });
       log('Latitude: $latitude, Longitude: $longitude');
     });
     WeatherDataFromApi weatherData =
         await _weatherDataController.getWeatherData("$latitude,$longitude");
     setState(() {
+      latitude;
+      longitude;
       _weatherData = weatherData;
-      log('Weather Data Received');
-      log(_weatherData.toString());
     });
   }
 
@@ -134,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator();
                     } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
+                      return CircularProgressIndicator();
                     } else if (snapshot.hasData) {
                       WeatherDataFromApi weatherData = snapshot.data!;
                       return Column(
